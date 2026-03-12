@@ -204,7 +204,7 @@ void compress(const char *in_path) {
     char tmp[MAX_CHARS];
     gen_codes(root, tmp, 0, table);
 
-    /* 3. Create output path: original_name.huff */
+    /* 3. Create output path: original_name.gidds */
     char out_path[512];
     snprintf(out_path, sizeof(out_path), "%s%s", in_path, EXT);
     FILE *out = fopen(out_path, "wb");
@@ -277,7 +277,7 @@ void decompress(const char *in_path) {
     char magic[5] = {0};
     fread(magic, 1, 4, in);
     if (strcmp(magic, MAGIC) != 0) {
-        printf("Not a valid .huff file!\n"); 
+        printf("Not a valid .gidds file!\n"); 
         fclose(in); 
         return;
     }
@@ -313,13 +313,13 @@ void decompress(const char *in_path) {
     /* Setup bit reader */
     BitReader br = {in, 0, 0, padding, total_bits, 0};
 
-    /* Build output path: strip .huff, add _decompressed */
+    /* Build output path: strip .gidds, add _decompressed */
     char out_path[512];
     strncpy(out_path, in_path, sizeof(out_path)-1);
     char *ext = strstr(out_path, EXT);
-    if (ext) *ext = '\0'; /* strip .huff */
+    if (ext) *ext = '\0'; /* strip .gidds */
     strncat(out_path, "_out", sizeof(out_path) - strlen(out_path) - 1);
-    /* Keep original extension if any was before .huff */
+    /* Keep original extension if any was before .gidds */
 
     FILE *out = fopen(out_path, "wb");
     if (!out) { 
@@ -353,8 +353,8 @@ void decompress(const char *in_path) {
 int main(int argc, char *argv[]) {
     if (argc != 3) {
         printf("Usage:\n");
-        printf("  %s -c <file>        → compress file → file.huff\n", argv[0]);
-        printf("  %s -d <file.huff>   → decompress\n", argv[0]);
+        printf("  %s -c <file>        → compress file → file.gidds\n", argv[0]);
+        printf("  %s -d <file.gidds>   → decompress\n", argv[0]);
         return 1;
     }
     if (strcmp(argv[1], "-c") == 0) compress(argv[2]);
